@@ -1,0 +1,37 @@
+<mat-card appearance="outlined" class="capture-card">
+  <mat-card-content>
+    <form class="capture" (submit)="onSubmit($event)">
+      <mat-form-field appearance="outline" class="title-field">
+        <mat-label>Projektname</mat-label>
+        <input
+          #nameInput
+          matInput
+          type="text"
+          autocomplete="off"
+          placeholder="z. B. Umzug organisieren"
+          [value]="name()"
+          (input)="name.set(nameInput.value)"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="title-field">
+        <mat-label>Gewünschtes Ergebnis (optional)</mat-label>
+        <textarea
+          #outcomeInput
+          matInput
+          placeholder="Woran erkennst du, dass das Projekt abgeschlossen ist?"
+          [value]="outcome()"
+          (input)="outcome.set(outcomeInput.value)"
+        ></textarea>
+      </mat-form-field>
+
+      @if (errorMessage(); as message) {
+        <p class="error-text">{{ message }}</p>
+      }
+
+      <button type="submit" mat-flat-button color="primary" class="capture-submit" [disabled]="!canSubmit() || submitting()">
+        {{ justCreated() ? 'Hinzugefügt ✓' : 'Projekt anlegen' }}
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

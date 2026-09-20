@@ -1,0 +1,72 @@
+<section class="project-list">
+  <h2 class="section-heading">Laufende Projekte</h2>
+
+  @if (openProjects().length === 0) {
+    <p class="empty-hint">Noch keine laufenden Projekte.</p>
+  } @else {
+    <mat-accordion class="projects">
+      @for (project of openProjects(); track project.id) {
+        <mat-expansion-panel
+          [expanded]="isExpanded(project)"
+          (opened)="onOpened(project)"
+          (closed)="onClosed(project)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ project.name }}</mat-panel-title>
+            <mat-panel-description class="project-description">
+              @if (project.outcome) {
+                <span class="project-outcome">{{ project.outcome }}</span>
+              }
+              <span class="status-badge" [class.is-onhold]="project.status === 'OnHold'">
+                {{ statusLabel(project.status) }}
+              </span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="project-detail">
+            <mat-form-field appearance="outline" class="detail-field">
+              <mat-label>Projektname</mat-label>
+              <input #nameInput matInput type="text" autocomplete="off" [value]="draftName()" (input)="draftName.set(nameInput.value)" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="detail-field">
+              <mat-label>Gewünschtes Ergebnis</mat-label>
+              <textarea
+                #outcomeInput
+                matInput
+                placeholder="Optional…"
+                [value]="draftOutcome()"
+                (input)="draftOutcome.set(outcomeInput.value)"
+              ></textarea>
+            </mat-form-field>
+
+            <div class="field">
+              <span class="field-label">Status</span>
+              <mat-button-toggle-group
+                class="wrapping-toggle-group"
+                aria-label="Status"
+                [value]="draftStatus()"
+                (change)="draftStatus.set($event.value)"
+              >
+                @for (option of statusOptions; track option.value) {
+                  <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+                }
+              </mat-button-toggle-group>
+            </div>
+
+            @if (errorMessage(); as message) {
+              <p class="error-text">{{ message }}</p>
+            }
+
+            <mat-action-row>
+              <button type="button" mat-button [disabled]="saving()" (click)="cancelEdit()">Abbrechen</button>
+              <button type="button" mat-flat-button color="primary" [disabled]="!canSave() || saving()" (click)="save(project)">
+                Speichern
+              </button>
+            </mat-action-row>
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  }
+</section>

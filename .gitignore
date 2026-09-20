@@ -1,0 +1,25 @@
+# === .NET ===
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# === Angular / Node ===
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+*.tsbuildinfo
+
+# === Podman / Container ===
+*.log
+.env
+.env.local
+
+# === Editors / OS ===
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

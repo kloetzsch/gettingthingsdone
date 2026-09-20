@@ -1,0 +1,74 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.app-toolbar {
+  flex: none;
+  justify-content: center;
+}
+
+.app-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.shell-container {
+  flex: 1;
+  background: var(--mat-sys-surface-container-lowest, var(--mat-sys-surface));
+}
+
+.nav-sidenav {
+  width: 180px;
+  border-right: none !important;
+  background: transparent !important;
+  padding-top: 16px;
+}
+
+.stats-sidenav {
+  width: 340px;
+  border-left: none !important;
+  background: transparent !important;
+  padding: 24px 24px 24px 0;
+  box-sizing: border-box;
+}
+
+.stats-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.center-content {
+  background: transparent !important;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.center-stack {
+  width: 100%;
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.center-stack router-outlet {
+  display: none;
+}
+
+::ng-deep .nav-sidenav a.mat-mdc-list-item.is-active {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+@media (max-width: 960px) {
+  .nav-sidenav,
+  .stats-sidenav {
+    display: none;
+  }
+}

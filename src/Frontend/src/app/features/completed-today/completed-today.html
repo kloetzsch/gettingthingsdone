@@ -1,0 +1,23 @@
+<mat-card appearance="outlined" class="stat-card">
+  <mat-card-content>
+    <div class="card-header">
+      <h2 class="section-heading">Heute erledigt</h2>
+      @if (items().length > 0) {
+        <span class="section-heading today-total">{{ totalLabel() }}</span>
+      }
+    </div>
+
+    @if (items().length === 0) {
+      <p class="empty-hint">Noch nichts erledigt heute.</p>
+    } @else {
+      <ul class="completed-items">
+        @for (task of items(); track task.id) {
+          <li class="completed-item">
+            <span class="completed-effort">{{ effortLabel(task.estimatedMinutes) }}</span>
+            <span class="completed-title">{{ task.title }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </mat-card-content>
+</mat-card>

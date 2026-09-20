@@ -1,0 +1,52 @@
+services:
+  db:
+    image: docker.io/library/postgres:16
+    environment:
+      POSTGRES_USER: getthingsdone
+      POSTGRES_PASSWORD: getthingsdone
+      POSTGRES_DB: getthingsdone
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      default:
+        ipv4_address: 10.89.10.2
+
+  backend:
+    build:
+      context: ./src/Backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Host=10.89.10.2;Port=5432;Database=getthingsdone;Username=getthingsdone;Password=getthingsdone"
+    ports:
+      - "5000:8080"
+    depends_on:
+      - db
+    networks:
+      default:
+        ipv4_address: 10.89.10.3
+
+  frontend:
+    build:
+      context: ./src/Frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      default:
+        ipv4_address: 10.89.10.4
+
+volumes:
+  db-data:
+
+networks:
+  default:
+    # DNS resolution (aardvark-dns) requires a working systemd user session to
+    # move slirp4netns into the user slice. That session isn't available in
+    # every rootless-Podman setup (e.g. plain WSL2 without a full login), so
+    # aardvark-dns fails to start and the whole stack hangs/fails. Disabling
+    # DNS and addressing containers by static IP sidesteps that entirely.
+    x-podman.disable_dns: true
+    ipam:
+      config:
+        - subnet: 10.89.10.0/24

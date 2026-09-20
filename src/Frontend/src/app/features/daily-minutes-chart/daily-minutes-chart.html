@@ -1,0 +1,29 @@
+<mat-card appearance="outlined" class="stat-card">
+  <mat-card-content>
+    <h2 class="section-heading">Erledigter Aufwand · 30 Tage</h2>
+
+    <svg
+      [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
+      class="chart-svg"
+      role="img"
+      aria-label="Summe der Minuten erledigter Aufgaben pro Tag, letzte 30 Tage"
+    >
+      @for (day of days(); track day.date.getTime(); let i = $index) {
+        <rect
+          [attr.x]="barX(i)"
+          [attr.y]="barY(day.minutes)"
+          [attr.width]="barWidth"
+          [attr.height]="barHeight(day.minutes)"
+          class="chart-bar"
+        >
+          <title>{{ day.date | date: 'dd.MM.' }} · {{ day.minutes }} Min</title>
+        </rect>
+      }
+    </svg>
+
+    <div class="chart-footer">
+      <span>{{ days()[0].date | date: 'dd.MM.' }}</span>
+      <span>heute</span>
+    </div>
+  </mat-card-content>
+</mat-card>

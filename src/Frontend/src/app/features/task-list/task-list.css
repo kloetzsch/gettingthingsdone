@@ -1,0 +1,135 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.filters-card .filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-label {
+  flex: none;
+  width: 64px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.filter-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.filter-toggle-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+}
+
+.filter-toggle-group ::ng-deep .mat-button-toggle-button {
+  min-height: 28px;
+}
+
+.filter-toggle-group ::ng-deep .mat-button-toggle-label-content {
+  padding: 0 10px;
+  line-height: 28px;
+  font-size: 0.78rem;
+}
+
+.filter-toggle-group ::ng-deep .mat-button-toggle-checkbox-wrapper {
+  display: none;
+}
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-row-grid {
+  display: grid;
+  grid-template-columns: minmax(160px, 2fr) 60px minmax(90px, 1fr) minmax(120px, 1.4fr) 116px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.88rem;
+}
+
+.cell-title {
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+.cell-effort,
+.cell-category,
+.cell-project {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.cell-status {
+  justify-self: end;
+}
+
+@media (max-width: 640px) {
+  .task-row-grid {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .cell {
+    white-space: normal;
+  }
+
+  .cell-status {
+    justify-self: start;
+  }
+}
+
+.quick-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.task-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 8px;
+}
+
+.detail-field {
+  width: 100%;
+}
+
+.toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.inline-add-field {
+  width: 140px;
+}

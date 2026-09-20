@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Shared field/label wrapper (used with mat-form-field and mat-button-toggle-group) */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.02em;
+}
+
+/* Let button-toggle-groups wrap onto multiple lines instead of overflowing */
+
+.wrapping-toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.wrapping-toggle-group .mat-button-toggle {
+  height: auto;
+}
+
+.toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.inline-add-field {
+  width: 140px;
+}
+
+.error-text {
+  margin: 0;
+  color: var(--mat-sys-error);
+  font-size: 0.88rem;
+}
+
+.empty-hint {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.92rem;
+}
+
+.section-heading {
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-on-surface);
+  margin: 0;
+}
+
+.stat-card {
+  width: 100%;
+}

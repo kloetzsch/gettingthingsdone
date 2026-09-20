@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.today-total {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.completed-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.completed-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.completed-effort {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.completed-title {
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface);
+  line-height: 1.35;
+}

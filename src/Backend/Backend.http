@@ -1,0 +1,54 @@
+@Backend_HostAddress = http://localhost:5206
+
+GET {{Backend_HostAddress}}/health
+Accept: application/json
+
+###
+
+GET {{Backend_HostAddress}}/api/projects
+Accept: application/json
+
+###
+
+POST {{Backend_HostAddress}}/api/projects
+Content-Type: application/json
+
+{
+  "name": "Umzug organisieren",
+  "outcome": "In der neuen Wohnung eingerichtet sein"
+}
+
+###
+
+GET {{Backend_HostAddress}}/api/categories
+Accept: application/json
+
+###
+
+POST {{Backend_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Haushalt"
+}
+
+###
+
+GET {{Backend_HostAddress}}/api/tasks
+Accept: application/json
+
+###
+
+POST {{Backend_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Umzugskartons besorgen",
+  "notes": null,
+  "category": "Haushalt",
+  "estimatedMinutes": 10,
+  "dueDate": null,
+  "projectId": null
+}
+
+###

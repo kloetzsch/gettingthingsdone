@@ -1,0 +1,88 @@
+<mat-card appearance="outlined" class="stat-card">
+  <mat-card-content>
+    <h2 class="section-heading">Erledigter Aufwand</h2>
+
+    <div class="controls">
+      <div class="field">
+        <span class="field-label">Gruppieren nach</span>
+        <mat-button-toggle-group
+          aria-label="Gruppieren nach"
+          [value]="groupBy()"
+          (change)="groupBy.set($event.value)"
+        >
+          @for (option of groupByOptions; track option.value) {
+            <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Zeitraum</span>
+        <mat-button-toggle-group
+          class="wrapping-toggle-group"
+          aria-label="Zeitraum"
+          [value]="rangePreset()"
+          (change)="rangePreset.set($event.value)"
+        >
+          @for (option of rangeOptions; track option.value) {
+            <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Aggregation</span>
+        <mat-button-toggle-group
+          aria-label="Aggregation"
+          [value]="aggregation()"
+          (change)="aggregation.set($event.value)"
+        >
+          @for (option of aggregationOptions; track option.value) {
+            <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+    @if (chart().groupNames.length === 0) {
+      <p class="empty-hint">Keine erledigten Aufgaben in diesem Zeitraum.</p>
+    } @else {
+      <div class="chart-scroll">
+        <svg
+          [attr.viewBox]="'0 0 ' + chart().buckets.length * barSlot + ' ' + chartHeight"
+          [style.width.px]="chart().buckets.length * 6"
+          preserveAspectRatio="none"
+          class="chart-svg"
+          role="img"
+          [attr.aria-label]="'Erledigter Aufwand pro ' + aggregation() + ', ' + chart().rangeLabel"
+        >
+          @for (bucket of chart().buckets; track $index; let i = $index) {
+            @for (segment of bucket.segments; track segment.name) {
+              <rect
+                [attr.x]="barX(i)"
+                [attr.y]="segment.y"
+                [attr.width]="barWidth"
+                [attr.height]="segment.height"
+                [attr.fill]="segment.color"
+              />
+            }
+            <rect [attr.x]="barX(i)" [attr.y]="0" [attr.width]="barWidth" [attr.height]="chartHeight" fill="transparent" pointer-events="all">
+              <title>{{ bucket.tooltip }}</title>
+            </rect>
+          }
+        </svg>
+      </div>
+
+      <p class="chart-range">{{ chart().rangeLabel }}</p>
+
+      <div class="legend">
+        @for (name of chart().groupNames; track name) {
+          <span class="legend-item">
+            <span class="legend-swatch" [style.background]="chart().colorByName.get(name)"></span>
+            {{ name }}
+          </span>
+        }
+      </div>
+    }
+  </mat-card-content>
+</mat-card>
