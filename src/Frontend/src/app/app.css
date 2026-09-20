@@ -21,21 +21,20 @@
 }
 
 .nav-sidenav {
-  width: 180px;
+  width: 260px;
   border-right: none !important;
   background: transparent !important;
-  padding-top: 16px;
 }
 
-.stats-sidenav {
-  width: 340px;
-  border-left: none !important;
-  background: transparent !important;
-  padding: 24px 24px 24px 0;
+.nav-sidenav ::ng-deep .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 16px 16px 24px 0;
   box-sizing: border-box;
 }
 
-.stats-stack {
+.nav-stats {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -45,13 +44,13 @@
   background: transparent !important;
   display: flex;
   justify-content: center;
-  padding: 24px;
+  padding: 24px 12px;
   box-sizing: border-box;
 }
 
 .center-stack {
   width: 100%;
-  max-width: 880px;
+  max-width: 1040px;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -67,8 +66,7 @@
 }
 
 @media (max-width: 960px) {
-  .nav-sidenav,
-  .stats-sidenav {
+  .nav-sidenav {
     display: none;
   }
 }

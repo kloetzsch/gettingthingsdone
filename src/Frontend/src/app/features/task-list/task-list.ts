@@ -65,9 +65,6 @@ export class TaskList {
   protected readonly draftProjectId = signal<string | null>(null);
   protected readonly draftStatus = signal<TaskDto['status']>('Inbox');
 
-  protected readonly isAddingCategory = signal(false);
-  protected readonly newCategoryName = signal('');
-
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -114,7 +111,6 @@ export class TaskList {
     this.draftMinutes.set(task.estimatedMinutes);
     this.draftProjectId.set(task.projectId);
     this.draftStatus.set(task.status);
-    this.isAddingCategory.set(false);
     this.errorMessage.set(null);
   }
 
@@ -184,29 +180,4 @@ export class TaskList {
     }
   }
 
-  protected startAddCategory(): void {
-    this.isAddingCategory.set(true);
-    this.newCategoryName.set('');
-  }
-
-  protected cancelAddCategory(): void {
-    this.isAddingCategory.set(false);
-    this.newCategoryName.set('');
-  }
-
-  protected async createCategory(): Promise<void> {
-    const name = this.newCategoryName().trim();
-    if (!name) {
-      this.cancelAddCategory();
-      return;
-    }
-
-    try {
-      const created = await this.categoriesService.create({ name });
-      this.draftCategory.set(created.name);
-      this.cancelAddCategory();
-    } catch {
-      this.errorMessage.set('Kategorie konnte nicht angelegt werden (existiert sie schon?).');
-    }
-  }
 }

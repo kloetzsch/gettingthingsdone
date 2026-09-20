@@ -123,13 +123,3 @@
   width: 100%;
 }
 
-.toggle-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-
-.inline-add-field {
-  width: 140px;
-}

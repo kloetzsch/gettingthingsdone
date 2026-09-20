@@ -32,9 +32,6 @@ export class TaskCapture {
 
   protected readonly activeProjects = () => this.projectsService.projects().filter((p) => p.status === 'Active');
 
-  protected readonly isAddingCategory = signal(false);
-  protected readonly newCategoryName = signal('');
-
   protected readonly submitting = signal(false);
   protected readonly justCreated = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -73,32 +70,6 @@ export class TaskCapture {
       this.errorMessage.set('Aufgabe konnte nicht gespeichert werden.');
     } finally {
       this.submitting.set(false);
-    }
-  }
-
-  protected startAddCategory(): void {
-    this.isAddingCategory.set(true);
-    this.newCategoryName.set('');
-  }
-
-  protected cancelAddCategory(): void {
-    this.isAddingCategory.set(false);
-    this.newCategoryName.set('');
-  }
-
-  protected async createCategory(): Promise<void> {
-    const name = this.newCategoryName().trim();
-    if (!name) {
-      this.cancelAddCategory();
-      return;
-    }
-
-    try {
-      const created = await this.categoriesService.create({ name });
-      this.selectedCategory.set(created.name);
-      this.cancelAddCategory();
-    } catch {
-      this.errorMessage.set('Kategorie konnte nicht angelegt werden (existiert sie schon?).');
     }
   }
 

@@ -10,13 +10,44 @@
 .capture {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .title-field {
   width: 100%;
 }
 
-.capture-submit {
-  align-self: flex-start;
+.compact-toggle-group {
+  width: 100%;
+}
+
+.compact-toggle-group ::ng-deep .mat-button-toggle-button {
+  min-height: 32px;
+}
+
+.compact-toggle-group ::ng-deep .mat-button-toggle-label-content {
+  padding: 0 12px;
+  line-height: 32px;
+  font-size: 0.82rem;
+}
+
+.effort-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  border: none;
+  border-radius: 0;
+}
+
+.effort-grid ::ng-deep .mat-button-toggle-button {
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 8px;
+}
+
+.effort-grid ::ng-deep .mat-button-toggle-appearance-standard + .mat-button-toggle-appearance-standard {
+  border-left: none;
+}
+
+.effort-grid ::ng-deep .mat-button-toggle-label-content {
+  padding: 0 4px;
 }

@@ -1,6 +1,33 @@
 :host {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-areas: 'main side';
+  align-items: start;
   gap: 32px;
   width: 100%;
+}
+
+.dashboard-side {
+  grid-area: side;
+  position: sticky;
+  top: 0;
+}
+
+.dashboard-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  :host {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'side' 'main';
+  }
+
+  .dashboard-side {
+    position: static;
+  }
 }

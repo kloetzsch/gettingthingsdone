@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 import { CompletedTodayList } from './features/completed-today/completed-today';
 import { DailyMinutesChart } from './features/daily-minutes-chart/daily-minutes-chart';
 
@@ -14,6 +15,7 @@ import { DailyMinutesChart } from './features/daily-minutes-chart/daily-minutes-
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
+    MatDividerModule,
     CompletedTodayList,
     DailyMinutesChart,
   ],
