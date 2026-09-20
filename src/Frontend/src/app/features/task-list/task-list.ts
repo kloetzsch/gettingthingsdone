@@ -29,6 +29,7 @@ export class TaskList {
   protected readonly statusFilter = signal<TaskDto['status'] | 'all'>('all');
   protected readonly effortFilter = signal<number | 'all'>('all');
   protected readonly projectFilter = signal<'all' | 'none' | string>('all');
+  protected readonly searchText = signal('');
 
   protected readonly filterableProjects = () => this.projectsService.projects().filter((p) => p.status !== 'Completed');
 
@@ -36,6 +37,7 @@ export class TaskList {
     const status = this.statusFilter();
     const effort = this.effortFilter();
     const project = this.projectFilter();
+    const search = this.searchText().trim().toLowerCase();
 
     return [...this.tasksService.tasks()]
       .filter((task) => task.status !== 'Done')
@@ -50,6 +52,7 @@ export class TaskList {
         }
         return task.projectId === project;
       })
+      .filter((task) => !search || task.title.toLowerCase().includes(search))
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   });
 
@@ -71,7 +74,12 @@ export class TaskList {
   protected readonly activeProjects = () => this.projectsService.projects().filter((p) => p.status === 'Active');
 
   protected hasActiveFilters(): boolean {
-    return this.statusFilter() !== 'all' || this.effortFilter() !== 'all' || this.projectFilter() !== 'all';
+    return (
+      this.statusFilter() !== 'all' ||
+      this.effortFilter() !== 'all' ||
+      this.projectFilter() !== 'all' ||
+      this.searchText().trim().length > 0
+    );
   }
 
   protected onStatusFilterClick(value: TaskDto['status'] | 'all'): void {

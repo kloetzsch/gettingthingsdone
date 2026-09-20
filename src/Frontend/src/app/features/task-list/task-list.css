@@ -35,6 +35,10 @@
   overflow-x: auto;
 }
 
+.search-field {
+  width: 220px;
+}
+
 .filter-toggle-group {
   display: inline-flex;
   flex-wrap: nowrap;
@@ -48,10 +52,6 @@
   padding: 0 10px;
   line-height: 28px;
   font-size: 0.78rem;
-}
-
-.filter-toggle-group ::ng-deep .mat-button-toggle-checkbox-wrapper {
-  display: none;
 }
 
 .tasks {
