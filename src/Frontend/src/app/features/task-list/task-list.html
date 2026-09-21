@@ -1,12 +1,26 @@
 <section class="task-list">
-  <h2 class="section-heading">Offene Aufgaben</h2>
-
   <mat-card appearance="outlined" class="filters-card">
     <mat-card-content class="filters">
+      <h2 class="section-heading">Offene Aufgaben</h2>
+
+      <div class="filter-row">
+        <span class="filter-label">Suche</span>
+        <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
+          <input
+            #searchInput
+            matInput
+            type="text"
+            placeholder="Titel enthält…"
+            [value]="searchText()"
+            (input)="searchText.set(searchInput.value)"
+          />
+        </mat-form-field>
+      </div>
+
       <div class="filter-row">
         <span class="filter-label">Status</span>
         <div class="filter-scroll">
-          <mat-button-toggle-group class="filter-toggle-group" aria-label="Status-Filter" [value]="statusFilter()">
+          <mat-button-toggle-group class="filter-toggle-group" aria-label="Status-Filter" hideSingleSelectionIndicator [value]="statusFilter()">
             <mat-button-toggle value="all" (click)="onStatusFilterClick('all')">Alle</mat-button-toggle>
             @for (option of openStatusOptions; track option.value) {
               <mat-button-toggle [value]="option.value" (click)="onStatusFilterClick(option.value)">
@@ -20,7 +34,7 @@
       <div class="filter-row">
         <span class="filter-label">Aufwand</span>
         <div class="filter-scroll">
-          <mat-button-toggle-group class="filter-toggle-group" aria-label="Aufwand-Filter" [value]="effortFilter()">
+          <mat-button-toggle-group class="filter-toggle-group" aria-label="Aufwand-Filter" hideSingleSelectionIndicator [value]="effortFilter()">
             <mat-button-toggle value="all" (click)="onEffortFilterClick('all')">Alle</mat-button-toggle>
             @for (option of effortOptions; track option.minutes) {
               <mat-button-toggle [value]="option.minutes" (click)="onEffortFilterClick(option.minutes)">
@@ -34,7 +48,7 @@
       <div class="filter-row">
         <span class="filter-label">Projekt</span>
         <div class="filter-scroll">
-          <mat-button-toggle-group class="filter-toggle-group" aria-label="Projekt-Filter" [value]="projectFilter()">
+          <mat-button-toggle-group class="filter-toggle-group" aria-label="Projekt-Filter" hideSingleSelectionIndicator [value]="projectFilter()">
             <mat-button-toggle value="all" (click)="onProjectFilterClick('all')">Alle</mat-button-toggle>
             <mat-button-toggle value="none" (click)="onProjectFilterClick('none')">Kein Projekt</mat-button-toggle>
             @for (project of filterableProjects(); track project.id) {
@@ -125,38 +139,17 @@
 
             <div class="field">
               <span class="field-label">Kategorie</span>
-              <div class="toggle-row">
-                <mat-button-toggle-group
-                  class="wrapping-toggle-group"
-                  aria-label="Kategorie"
-                  [value]="draftCategory()"
-                  (change)="draftCategory.set($event.value)"
-                >
-                  <mat-button-toggle [value]="null">Ohne Kategorie</mat-button-toggle>
-                  @for (category of categoriesService.categories(); track category.id) {
-                    <mat-button-toggle [value]="category.name">{{ category.name }}</mat-button-toggle>
-                  }
-                </mat-button-toggle-group>
-
-                @if (isAddingCategory()) {
-                  <mat-form-field appearance="outline" class="inline-add-field">
-                    <input
-                      #newCategoryInput
-                      matInput
-                      type="text"
-                      autocomplete="off"
-                      placeholder="Name…"
-                      [value]="newCategoryName()"
-                      (input)="newCategoryName.set(newCategoryInput.value)"
-                      (keydown.enter)="$event.preventDefault(); createCategory()"
-                      (keydown.escape)="cancelAddCategory()"
-                      (blur)="createCategory()"
-                    />
-                  </mat-form-field>
-                } @else {
-                  <button type="button" mat-stroked-button (click)="startAddCategory()">+ Neu</button>
+              <mat-button-toggle-group
+                class="wrapping-toggle-group"
+                aria-label="Kategorie"
+                [value]="draftCategory()"
+                (change)="draftCategory.set($event.value)"
+              >
+                <mat-button-toggle [value]="null">Ohne Kategorie</mat-button-toggle>
+                @for (category of categoriesService.categories(); track category.id) {
+                  <mat-button-toggle [value]="category.name">{{ category.name }}</mat-button-toggle>
                 }
-              </div>
+              </mat-button-toggle-group>
             </div>
 
             <div class="field">

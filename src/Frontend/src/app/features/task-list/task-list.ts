@@ -6,6 +6,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CategoriesService } from '../../core/services/categories.service';
+import { FocusCoordinatorService } from '../../core/services/focus-coordinator.service';
 import { ProjectsService } from '../../core/services/projects.service';
 import { TasksService } from '../../core/services/tasks.service';
 import { EFFORT_OPTIONS, STATUS_OPTIONS, TaskDto } from '../../core/models/task';
@@ -21,6 +22,7 @@ export class TaskList {
   private readonly tasksService = inject(TasksService);
   protected readonly categoriesService = inject(CategoriesService);
   protected readonly projectsService = inject(ProjectsService);
+  private readonly focusCoordinator = inject(FocusCoordinatorService);
 
   protected readonly effortOptions = EFFORT_OPTIONS;
   protected readonly statusOptions = STATUS_OPTIONS;
@@ -29,6 +31,7 @@ export class TaskList {
   protected readonly statusFilter = signal<TaskDto['status'] | 'all'>('all');
   protected readonly effortFilter = signal<number | 'all'>('all');
   protected readonly projectFilter = signal<'all' | 'none' | string>('all');
+  protected readonly searchText = signal('');
 
   protected readonly filterableProjects = () => this.projectsService.projects().filter((p) => p.status !== 'Completed');
 
@@ -36,6 +39,7 @@ export class TaskList {
     const status = this.statusFilter();
     const effort = this.effortFilter();
     const project = this.projectFilter();
+    const search = this.searchText().trim().toLowerCase();
 
     return [...this.tasksService.tasks()]
       .filter((task) => task.status !== 'Done')
@@ -50,6 +54,7 @@ export class TaskList {
         }
         return task.projectId === project;
       })
+      .filter((task) => !search || task.title.toLowerCase().includes(search))
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   });
 
@@ -62,16 +67,18 @@ export class TaskList {
   protected readonly draftProjectId = signal<string | null>(null);
   protected readonly draftStatus = signal<TaskDto['status']>('Inbox');
 
-  protected readonly isAddingCategory = signal(false);
-  protected readonly newCategoryName = signal('');
-
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly activeProjects = () => this.projectsService.projects().filter((p) => p.status === 'Active');
 
   protected hasActiveFilters(): boolean {
-    return this.statusFilter() !== 'all' || this.effortFilter() !== 'all' || this.projectFilter() !== 'all';
+    return (
+      this.statusFilter() !== 'all' ||
+      this.effortFilter() !== 'all' ||
+      this.projectFilter() !== 'all' ||
+      this.searchText().trim().length > 0
+    );
   }
 
   protected onStatusFilterClick(value: TaskDto['status'] | 'all'): void {
@@ -106,7 +113,6 @@ export class TaskList {
     this.draftMinutes.set(task.estimatedMinutes);
     this.draftProjectId.set(task.projectId);
     this.draftStatus.set(task.status);
-    this.isAddingCategory.set(false);
     this.errorMessage.set(null);
   }
 
@@ -169,36 +175,11 @@ export class TaskList {
         projectId: task.projectId,
       });
       this.expandedTaskId.set(null);
+      this.focusCoordinator.requestCaptureFormFocus();
     } catch {
       this.errorMessage.set('Aufgabe konnte nicht als erledigt markiert werden.');
     } finally {
       this.saving.set(false);
-    }
-  }
-
-  protected startAddCategory(): void {
-    this.isAddingCategory.set(true);
-    this.newCategoryName.set('');
-  }
-
-  protected cancelAddCategory(): void {
-    this.isAddingCategory.set(false);
-    this.newCategoryName.set('');
-  }
-
-  protected async createCategory(): Promise<void> {
-    const name = this.newCategoryName().trim();
-    if (!name) {
-      this.cancelAddCategory();
-      return;
-    }
-
-    try {
-      const created = await this.categoriesService.create({ name });
-      this.draftCategory.set(created.name);
-      this.cancelAddCategory();
-    } catch {
-      this.errorMessage.set('Kategorie konnte nicht angelegt werden (existiert sie schon?).');
     }
   }
 }

@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(podman compose *)",
+      "Bash(podman ps*)",
+      "Bash(curl *)",
+      "Bash(dotnet build*)",
+      "Bash(dotnet test*)",
+      "Bash(npx ng *)",
+      "Bash(npx playwright *)",
+      "Bash(npm install*)",
+      "Bash(npm run *)",
+      "Bash(node *)",
+      "Bash(cat *)",
+      "Bash(mkdir *)",
+      "Bash(ss *)",
+      "Bash(lsof *)",
+      "Bash(sleep *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ],
+    "ask": [
+      "Bash(git commit*)",
+      "Bash(git push*)"
+    ]
+  }
+}

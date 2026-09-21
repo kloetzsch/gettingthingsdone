@@ -24,4 +24,9 @@ export class CategoriesService {
     this.categories.update((current) => [...current, created].sort((a, b) => a.name.localeCompare(b.name)));
     return created;
   }
+
+  async delete(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
+    this.categories.update((current) => current.filter((category) => category.id !== id));
+  }
 }
