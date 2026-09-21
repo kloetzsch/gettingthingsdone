@@ -1,6 +1,22 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
+}
+
+.stat-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-card-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .section-heading {
@@ -10,21 +26,35 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 12px 0 4px;
+  gap: 8px;
+  padding: 16px 0;
   border-top: 1px solid var(--mat-sys-outline-variant);
   border-bottom: 1px solid var(--mat-sys-outline-variant);
   margin-bottom: 16px;
 }
 
+.controls .field {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.controls .field-label {
+  flex: none;
+  width: 120px;
+}
+
 .chart-scroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
   overflow-x: auto;
 }
 
 .chart-svg {
   display: block;
   min-width: 100%;
-  height: 180px;
+  height: 100%;
 }
 
 .chart-range {

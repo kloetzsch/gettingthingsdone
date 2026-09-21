@@ -39,21 +39,6 @@
   width: 220px;
 }
 
-.filter-toggle-group {
-  display: inline-flex;
-  flex-wrap: nowrap;
-}
-
-.filter-toggle-group ::ng-deep .mat-button-toggle-button {
-  min-height: 28px;
-}
-
-.filter-toggle-group ::ng-deep .mat-button-toggle-label-content {
-  padding: 0 10px;
-  line-height: 28px;
-  font-size: 0.78rem;
-}
-
 .tasks {
   display: flex;
   flex-direction: column;

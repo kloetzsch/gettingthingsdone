@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CategoriesService } from '../../core/services/categories.service';
+import { FocusCoordinatorService } from '../../core/services/focus-coordinator.service';
 import { ProjectsService } from '../../core/services/projects.service';
 import { TasksService } from '../../core/services/tasks.service';
 import { EFFORT_OPTIONS } from '../../core/models/task';
@@ -16,17 +17,23 @@ import { EFFORT_OPTIONS } from '../../core/models/task';
   styleUrl: './task-capture.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskCapture {
+export class TaskCapture implements AfterViewInit {
   protected readonly categoriesService = inject(CategoriesService);
   protected readonly projectsService = inject(ProjectsService);
   private readonly tasksService = inject(TasksService);
+  private readonly focusCoordinator = inject(FocusCoordinatorService);
 
-  @ViewChild('titleInput') private titleInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('effortGroup', { read: ElementRef }) private effortGroup?: ElementRef<HTMLElement>;
+
+  private readonly refocusOnRequest = effect(() => {
+    this.focusCoordinator.captureFormRequests();
+    this.focusFirstEffortButton();
+  });
 
   protected readonly effortOptions = EFFORT_OPTIONS;
 
   protected readonly title = signal('');
-  protected readonly selectedMinutes = signal<number | null>(null);
+  protected readonly selectedMinutes = signal<number | null>(EFFORT_OPTIONS[0].minutes);
   protected readonly selectedCategory = signal<string | null>(null);
   protected readonly selectedProjectId = signal<string | null>(null);
 
@@ -35,6 +42,10 @@ export class TaskCapture {
   protected readonly submitting = signal(false);
   protected readonly justCreated = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  ngAfterViewInit(): void {
+    this.focusFirstEffortButton();
+  }
 
   protected canSubmit(): boolean {
     return this.title().trim().length > 0 && this.selectedMinutes() !== null;
@@ -75,9 +86,13 @@ export class TaskCapture {
 
   private resetForm(): void {
     this.title.set('');
-    this.selectedMinutes.set(null);
+    this.selectedMinutes.set(EFFORT_OPTIONS[0].minutes);
     this.selectedCategory.set(null);
     this.selectedProjectId.set(null);
-    this.titleInput?.nativeElement.focus();
+    this.focusFirstEffortButton();
+  }
+
+  private focusFirstEffortButton(): void {
+    this.effortGroup?.nativeElement.querySelector<HTMLButtonElement>('button')?.focus();
   }
 }

@@ -6,6 +6,8 @@
       <div class="field">
         <span class="field-label">Gruppieren nach</span>
         <mat-button-toggle-group
+          class="filter-toggle-group"
+          hideSingleSelectionIndicator
           aria-label="Gruppieren nach"
           [value]="groupBy()"
           (change)="groupBy.set($event.value)"
@@ -19,7 +21,8 @@
       <div class="field">
         <span class="field-label">Zeitraum</span>
         <mat-button-toggle-group
-          class="wrapping-toggle-group"
+          class="filter-toggle-group"
+          hideSingleSelectionIndicator
           aria-label="Zeitraum"
           [value]="rangePreset()"
           (change)="rangePreset.set($event.value)"
@@ -33,6 +36,8 @@
       <div class="field">
         <span class="field-label">Aggregation</span>
         <mat-button-toggle-group
+          class="filter-toggle-group"
+          hideSingleSelectionIndicator
           aria-label="Aggregation"
           [value]="aggregation()"
           (change)="aggregation.set($event.value)"

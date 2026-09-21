@@ -6,6 +6,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CategoriesService } from '../../core/services/categories.service';
+import { FocusCoordinatorService } from '../../core/services/focus-coordinator.service';
 import { ProjectsService } from '../../core/services/projects.service';
 import { TasksService } from '../../core/services/tasks.service';
 import { EFFORT_OPTIONS, STATUS_OPTIONS, TaskDto } from '../../core/models/task';
@@ -21,6 +22,7 @@ export class TaskList {
   private readonly tasksService = inject(TasksService);
   protected readonly categoriesService = inject(CategoriesService);
   protected readonly projectsService = inject(ProjectsService);
+  private readonly focusCoordinator = inject(FocusCoordinatorService);
 
   protected readonly effortOptions = EFFORT_OPTIONS;
   protected readonly statusOptions = STATUS_OPTIONS;
@@ -173,11 +175,11 @@ export class TaskList {
         projectId: task.projectId,
       });
       this.expandedTaskId.set(null);
+      this.focusCoordinator.requestCaptureFormFocus();
     } catch {
       this.errorMessage.set('Aufgabe konnte nicht als erledigt markiert werden.');
     } finally {
       this.saving.set(false);
     }
   }
-
 }

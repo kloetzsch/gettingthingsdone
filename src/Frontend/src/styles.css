@@ -29,6 +29,23 @@
   height: auto;
 }
 
+/* Compact horizontal toggle-group, e.g. for filter/control rows */
+
+.filter-toggle-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+}
+
+.filter-toggle-group ::ng-deep .mat-button-toggle-button {
+  min-height: 28px;
+}
+
+.filter-toggle-group ::ng-deep .mat-button-toggle-label-content {
+  padding: 0 10px;
+  line-height: 28px;
+  font-size: 0.78rem;
+}
+
 .error-text {
   margin: 0;
   color: var(--mat-sys-error);

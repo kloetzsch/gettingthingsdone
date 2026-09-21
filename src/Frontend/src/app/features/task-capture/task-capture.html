@@ -4,7 +4,9 @@
       <div class="field">
         <span class="field-label">Aufwand</span>
         <mat-button-toggle-group
+          #effortGroup
           class="wrapping-toggle-group compact-toggle-group effort-grid"
+          hideSingleSelectionIndicator
           aria-label="Aufwand"
           [value]="selectedMinutes()"
           (change)="selectedMinutes.set($event.value)"
@@ -20,6 +22,7 @@
         <mat-button-toggle-group
           class="wrapping-toggle-group compact-toggle-group"
           vertical
+          hideSingleSelectionIndicator
           aria-label="Kategorie"
           [value]="selectedCategory()"
           (change)="selectedCategory.set($event.value)"
@@ -36,6 +39,7 @@
         <mat-button-toggle-group
           class="wrapping-toggle-group compact-toggle-group"
           vertical
+          hideSingleSelectionIndicator
           aria-label="Projekt"
           [value]="selectedProjectId()"
           (change)="selectedProjectId.set($event.value)"
