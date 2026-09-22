@@ -1,0 +1,47 @@
+<mat-card appearance="outlined" class="manage-card">
+  <mat-card-content>
+    <h2 class="section-heading">Kategorien</h2>
+
+    <form class="add-row" (submit)="onSubmit($event)">
+      <mat-form-field appearance="outline" class="name-field">
+        <mat-label>Neue Kategorie</mat-label>
+        <input
+          #nameInput
+          matInput
+          type="text"
+          autocomplete="off"
+          placeholder="z. B. Garten"
+          [value]="newName()"
+          (input)="newName.set(nameInput.value)"
+        />
+      </mat-form-field>
+      <button type="submit" mat-flat-button color="primary" [disabled]="!canSubmit() || submitting()">Hinzufügen</button>
+    </form>
+
+    @if (errorMessage(); as message) {
+      <p class="error-text">{{ message }}</p>
+    }
+
+    @if (categoriesService.categories().length === 0) {
+      <p class="empty-hint">Noch keine Kategorien angelegt.</p>
+    } @else {
+      <ul class="category-items">
+        @for (category of categoriesService.categories(); track category.id) {
+          <li class="category-item">
+            <span class="category-name">{{ category.name }}</span>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              [disabled]="deletingId() === category.id"
+              (click)="remove(category.id)"
+              aria-label="Kategorie löschen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </mat-card-content>
+</mat-card>
