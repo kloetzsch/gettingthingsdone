@@ -12,17 +12,17 @@ export function addDays(date: Date, amount: number): Date {
   return d;
 }
 
-export function startOfWeek(date: Date): Date {
+function startOfWeek(date: Date): Date {
   const d = startOfDay(date);
   const mondayIndex = (d.getDay() + 6) % 7;
   return addDays(d, -mondayIndex);
 }
 
-export function startOfMonth(date: Date): Date {
+function startOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
-export function addMonths(date: Date, amount: number): Date {
+function addMonths(date: Date, amount: number): Date {
   return new Date(date.getFullYear(), date.getMonth() + amount, 1);
 }
 
