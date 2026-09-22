@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { TasksService } from '../../core/services/tasks.service';
-import { EFFORT_OPTIONS, TaskDto } from '../../core/models/task';
+import { TaskDto } from '../../core/api/models';
+import { EFFORT_OPTIONS } from '../../core/models/task';
 import { formatDuration } from '../../core/utils/duration';
 
 function isSameLocalDay(a: Date, b: Date): boolean {

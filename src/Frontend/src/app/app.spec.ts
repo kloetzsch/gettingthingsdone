@@ -25,6 +25,6 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     const links = Array.from(compiled.querySelectorAll('a[mat-list-item]')).map((el) => el.textContent?.trim());
-    expect(links).toEqual(['Aufgaben', 'Projekte', 'Statistik']);
+    expect(links).toEqual(['Aufgaben', 'Projekte', 'Kategorien', 'Statistik']);
   });
 });

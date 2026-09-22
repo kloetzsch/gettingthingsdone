@@ -17,14 +17,21 @@ public static class ProjectEndpoints
             var projects = await db.Projects.OrderBy(p => p.CreatedAt).ToListAsync();
             return Results.Ok(projects.Select(ProjectDto.FromEntity));
         })
-        .WithName("GetProjects");
+        .WithName("GetProjects")
+        .WithSummary("Projekte auflisten")
+        .WithDescription("Liefert alle Projekte.")
+        .Produces<IEnumerable<ProjectDto>>(StatusCodes.Status200OK);
 
         group.MapGet("/{id:guid}", async (AppDbContext db, Guid id) =>
         {
             var project = await db.Projects.FindAsync(id);
             return project is null ? Results.NotFound() : Results.Ok(ProjectDto.FromEntity(project));
         })
-        .WithName("GetProjectById");
+        .WithName("GetProjectById")
+        .WithSummary("Einzelnes Projekt abrufen")
+        .WithDescription("Liefert ein Projekt anhand seiner Id.")
+        .Produces<ProjectDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("/", async (AppDbContext db, [FromBody] CreateProjectRequest request) =>
         {
@@ -50,7 +57,11 @@ public static class ProjectEndpoints
 
             return Results.Created($"/api/projects/{project.Id}", ProjectDto.FromEntity(project));
         })
-        .WithName("CreateProject");
+        .WithName("CreateProject")
+        .WithSummary("Projekt anlegen")
+        .WithDescription("Legt ein neues Projekt im Status \"Active\" an.")
+        .Produces<ProjectDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem();
 
         group.MapPut("/{id:guid}", async (AppDbContext db, Guid id, [FromBody] UpdateProjectRequest request) =>
         {
@@ -76,7 +87,12 @@ public static class ProjectEndpoints
 
             return Results.Ok(ProjectDto.FromEntity(project));
         })
-        .WithName("UpdateProject");
+        .WithName("UpdateProject")
+        .WithSummary("Projekt aktualisieren")
+        .WithDescription("Aktualisiert Name, gewünschtes Ergebnis und Status eines bestehenden Projekts.")
+        .Produces<ProjectDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .ProducesValidationProblem();
 
         group.MapDelete("/{id:guid}", async (AppDbContext db, Guid id) =>
         {
@@ -91,7 +107,11 @@ public static class ProjectEndpoints
 
             return Results.NoContent();
         })
-        .WithName("DeleteProject");
+        .WithName("DeleteProject")
+        .WithSummary("Projekt löschen")
+        .WithDescription("Löscht ein Projekt unwiderruflich. Zugehörige Aufgaben bleiben erhalten, verlieren aber ihre Projektzuordnung nicht automatisch.")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status404NotFound);
 
         return group;
     }

@@ -5,7 +5,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ProjectsService } from '../../core/services/projects.service';
-import { ProjectDto, ProjectStatus } from '../../core/models/project';
+import { ProjectDto, ProjectStatus } from '../../core/api/models';
 
 interface StatusOption {
   value: ProjectStatus;

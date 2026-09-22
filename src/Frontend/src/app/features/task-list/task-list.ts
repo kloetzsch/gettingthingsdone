@@ -9,7 +9,8 @@ import { CategoriesService } from '../../core/services/categories.service';
 import { FocusCoordinatorService } from '../../core/services/focus-coordinator.service';
 import { ProjectsService } from '../../core/services/projects.service';
 import { TasksService } from '../../core/services/tasks.service';
-import { EFFORT_OPTIONS, STATUS_OPTIONS, TaskDto } from '../../core/models/task';
+import { TaskDto } from '../../core/api/models';
+import { EFFORT_OPTIONS, STATUS_OPTIONS } from '../../core/models/task';
 
 @Component({
   selector: 'app-task-list',

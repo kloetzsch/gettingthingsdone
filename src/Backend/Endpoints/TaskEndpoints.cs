@@ -29,14 +29,21 @@ public static class TaskEndpoints
             var tasks = await query.OrderBy(t => t.CreatedAt).ToListAsync();
             return Results.Ok(tasks.Select(TaskDto.FromEntity));
         })
-        .WithName("GetTasks");
+        .WithName("GetTasks")
+        .WithSummary("Aufgaben auflisten")
+        .WithDescription("Liefert alle Aufgaben, optional gefiltert nach GTD-Status und/oder Projekt.")
+        .Produces<IEnumerable<TaskDto>>(StatusCodes.Status200OK);
 
         group.MapGet("/{id:guid}", async (AppDbContext db, Guid id) =>
         {
             var task = await db.Tasks.FindAsync(id);
             return task is null ? Results.NotFound() : Results.Ok(TaskDto.FromEntity(task));
         })
-        .WithName("GetTaskById");
+        .WithName("GetTaskById")
+        .WithSummary("Einzelne Aufgabe abrufen")
+        .WithDescription("Liefert eine Aufgabe anhand ihrer Id.")
+        .Produces<TaskDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("/", async (AppDbContext db, [FromBody] CreateTaskRequest request) =>
         {
@@ -81,7 +88,11 @@ public static class TaskEndpoints
 
             return Results.Created($"/api/tasks/{task.Id}", TaskDto.FromEntity(task));
         })
-        .WithName("CreateTask");
+        .WithName("CreateTask")
+        .WithSummary("Aufgabe anlegen")
+        .WithDescription("Legt eine neue Aufgabe im Status \"Inbox\" an. estimatedMinutes muss einem der erlaubten Aufwandswerte entsprechen.")
+        .Produces<TaskDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem();
 
         group.MapPut("/{id:guid}", async (AppDbContext db, Guid id, [FromBody] UpdateTaskRequest request) =>
         {
@@ -136,7 +147,12 @@ public static class TaskEndpoints
 
             return Results.Ok(TaskDto.FromEntity(task));
         })
-        .WithName("UpdateTask");
+        .WithName("UpdateTask")
+        .WithSummary("Aufgabe aktualisieren")
+        .WithDescription("Aktualisiert eine bestehende Aufgabe vollständig, inkl. Status. Setzt/löscht completedAt automatisch beim Wechsel nach/aus \"Done\".")
+        .Produces<TaskDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .ProducesValidationProblem();
 
         group.MapDelete("/{id:guid}", async (AppDbContext db, Guid id) =>
         {
@@ -151,7 +167,11 @@ public static class TaskEndpoints
 
             return Results.NoContent();
         })
-        .WithName("DeleteTask");
+        .WithName("DeleteTask")
+        .WithSummary("Aufgabe löschen")
+        .WithDescription("Löscht eine Aufgabe unwiderruflich.")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status404NotFound);
 
         return group;
     }
