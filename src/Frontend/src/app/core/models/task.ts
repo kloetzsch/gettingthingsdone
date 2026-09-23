@@ -1,36 +1,4 @@
-export type GtdStatus = 'Inbox' | 'NextAction' | 'WaitingFor' | 'SomedayMaybe' | 'Done';
-
-export interface TaskDto {
-  id: string;
-  title: string;
-  notes: string | null;
-  status: GtdStatus;
-  category: string | null;
-  estimatedMinutes: number;
-  dueDate: string | null;
-  createdAt: string;
-  completedAt: string | null;
-  projectId: string | null;
-}
-
-export interface CreateTaskRequest {
-  title: string;
-  notes: string | null;
-  category: string | null;
-  estimatedMinutes: number;
-  dueDate: string | null;
-  projectId: string | null;
-}
-
-export interface UpdateTaskRequest {
-  title: string;
-  notes: string | null;
-  status: GtdStatus;
-  category: string | null;
-  estimatedMinutes: number;
-  dueDate: string | null;
-  projectId: string | null;
-}
+import { GtdStatus } from '../api/models';
 
 export interface EffortOption {
   minutes: number;

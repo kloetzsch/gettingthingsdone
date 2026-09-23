@@ -21,7 +21,7 @@
 }
 
 .nav-sidenav {
-  width: 260px;
+  width: 16.6667%;
   border-right: none !important;
   background: transparent !important;
 }
@@ -43,14 +43,12 @@
 .center-content {
   background: transparent !important;
   display: flex;
-  justify-content: center;
   padding: 24px 12px;
   box-sizing: border-box;
 }
 
 .center-stack {
   width: 100%;
-  max-width: 1040px;
   display: flex;
   flex-direction: column;
   gap: 32px;

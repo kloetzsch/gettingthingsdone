@@ -17,7 +17,10 @@ public static class CategoryEndpoints
             var categories = await db.Categories.OrderBy(c => c.Name).ToListAsync();
             return Results.Ok(categories.Select(CategoryDto.FromEntity));
         })
-        .WithName("GetCategories");
+        .WithName("GetCategories")
+        .WithSummary("Kategorien auflisten")
+        .WithDescription("Liefert alle Kategorien, alphabetisch sortiert.")
+        .Produces<IEnumerable<CategoryDto>>(StatusCodes.Status200OK);
 
         group.MapPost("/", async (AppDbContext db, [FromBody] CreateCategoryRequest request) =>
         {
@@ -49,7 +52,11 @@ public static class CategoryEndpoints
 
             return Results.Created($"/api/categories/{category.Id}", CategoryDto.FromEntity(category));
         })
-        .WithName("CreateCategory");
+        .WithName("CreateCategory")
+        .WithSummary("Kategorie anlegen")
+        .WithDescription("Legt eine neue Kategorie an. Der Name muss eindeutig sein.")
+        .Produces<CategoryDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem();
 
         group.MapDelete("/{id:guid}", async (AppDbContext db, Guid id) =>
         {
@@ -64,7 +71,11 @@ public static class CategoryEndpoints
 
             return Results.NoContent();
         })
-        .WithName("DeleteCategory");
+        .WithName("DeleteCategory")
+        .WithSummary("Kategorie löschen")
+        .WithDescription("Löscht eine Kategorie unwiderruflich. Aufgaben, die diese Kategorie als freien Text tragen, werden dabei nicht verändert.")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status404NotFound);
 
         return group;
     }
