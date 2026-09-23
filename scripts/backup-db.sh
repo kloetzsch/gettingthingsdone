@@ -3,8 +3,8 @@
 # getthingsdone-Datenbank. Umgeht damit das Rechteproblem der rohen
 # Postgres-Datendateien (Container-UID 999, chmod 0700) - siehe README.
 #
-# Manuell:      ./scripts/backup-db.sh
-# Per Cron:     siehe README, Abschnitt "Datenbank-Backups".
+# Aufruf:       ./scripts/backup-db.sh
+# Details:      siehe README, Abschnitt "Datenbank-Backups".
 set -euo pipefail
 
 # Rootless Podman braucht diese Variable, wenn das Skript ohne interaktive

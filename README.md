@@ -52,14 +52,17 @@ gewünscht ist.
 ### Von Windows aus zugreifen
 
 Die Backup-Dateien liegen unter `~/.backups/getthingsdone/` und sind - anders
-als die rohen Postgres-Datendateien - normal lesbar. Von Windows aus
-erreichbar über:
+als die rohen Postgres-Datendateien - normal lesbar. Unter WSL2 von Windows
+aus erreichbar über:
 
 ```
-\\wsl.localhost\Ubuntu-26.04\home\knuffi631\.backups\getthingsdone\
+\\wsl.localhost\<Distro-Name>\home\<Linux-Benutzername>\.backups\getthingsdone\
 ```
 
-Von dort aus mit jedem gewünschten Windows-Backup-Tool weitersichern.
+`<Distro-Name>` und `<Linux-Benutzername>` sind pro Rechner/Setup
+unterschiedlich - `<Distro-Name>` liefert `wsl -l` (Windows-Terminal),
+`<Linux-Benutzername>` liefert `whoami` (WSL-Terminal). Von dort aus mit
+jedem gewünschten Windows-Backup-Tool weitersichern.
 
 ### Wiederherstellen
 
