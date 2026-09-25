@@ -67,6 +67,32 @@ public class TaskEndpointTests(CustomWebApplicationFactory factory) : IClassFixt
     }
 
     [Fact]
+    public async Task UpdateTask_Discarding_ClearsCompletedAt()
+    {
+        var client = factory.CreateClient();
+
+        var createResponse = await client.PostAsJsonAsync(
+            "/api/tasks",
+            new CreateTaskRequest("Bericht schreiben", null, null, EffortMinutes.OneDay, null, null));
+        var created = await createResponse.Content.ReadFromJsonAsync<TaskDto>(TestJsonOptions.Default);
+
+        await client.PutAsJsonAsync(
+            $"/api/tasks/{created!.Id}",
+            new UpdateTaskRequest("Bericht schreiben", null, GtdStatus.Done, null, EffortMinutes.OneDay, null, null),
+            TestJsonOptions.Default);
+
+        var discardResponse = await client.PutAsJsonAsync(
+            $"/api/tasks/{created.Id}",
+            new UpdateTaskRequest("Bericht schreiben", null, GtdStatus.Discarded, null, EffortMinutes.OneDay, null, null),
+            TestJsonOptions.Default);
+
+        Assert.Equal(HttpStatusCode.OK, discardResponse.StatusCode);
+        var discarded = await discardResponse.Content.ReadFromJsonAsync<TaskDto>(TestJsonOptions.Default);
+        Assert.Equal(GtdStatus.Discarded, discarded!.Status);
+        Assert.Null(discarded.CompletedAt);
+    }
+
+    [Fact]
     public async Task GetTaskById_WhenMissing_ReturnsNotFound()
     {
         var client = factory.CreateClient();

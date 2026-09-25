@@ -16,7 +16,11 @@ export const STATUS_OPTIONS: ReadonlyArray<StatusOption> = [
   { value: 'WaitingFor', label: 'Wartet auf' },
   { value: 'SomedayMaybe', label: 'Irgendwann' },
   { value: 'Done', label: 'Erledigt' },
+  { value: 'Discarded', label: 'Verworfen' },
 ];
+
+/** Abgeschlossene Aufgaben tauchen nicht mehr in der offenen Aufgabenliste auf. */
+export const CLOSED_STATUSES: ReadonlyArray<GtdStatus> = ['Done', 'Discarded'];
 
 /** Muss mit Backend.Domain.EffortMinutes.AllowedValues übereinstimmen. */
 export const EFFORT_OPTIONS: ReadonlyArray<EffortOption> = [

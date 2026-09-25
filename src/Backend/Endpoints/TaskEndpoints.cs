@@ -149,7 +149,7 @@ public static class TaskEndpoints
         })
         .WithName("UpdateTask")
         .WithSummary("Aufgabe aktualisieren")
-        .WithDescription("Aktualisiert eine bestehende Aufgabe vollständig, inkl. Status. Setzt/löscht completedAt automatisch beim Wechsel nach/aus \"Done\".")
+        .WithDescription("Aktualisiert eine bestehende Aufgabe vollständig, inkl. Status. Setzt/löscht completedAt automatisch beim Wechsel nach/aus \"Done\". Verworfene Aufgaben (\"Discarded\") haben kein completedAt.")
         .Produces<TaskDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .ProducesValidationProblem();

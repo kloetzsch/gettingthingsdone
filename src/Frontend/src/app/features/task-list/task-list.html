@@ -88,6 +88,7 @@
 
           <div class="task-detail">
             <div class="quick-actions">
+              <button type="button" mat-stroked-button [disabled]="saving()" (click)="discard(task)">Verwerfen ✕</button>
               <button type="button" mat-flat-button color="primary" [disabled]="saving()" (click)="markDone(task)">
                 Erledigt ✓
               </button>

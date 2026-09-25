@@ -10,7 +10,7 @@ import { FocusCoordinatorService } from '../../core/services/focus-coordinator.s
 import { ProjectsService } from '../../core/services/projects.service';
 import { TasksService } from '../../core/services/tasks.service';
 import { TaskDto } from '../../core/api/models';
-import { EFFORT_OPTIONS, STATUS_OPTIONS } from '../../core/models/task';
+import { CLOSED_STATUSES, EFFORT_OPTIONS, STATUS_OPTIONS } from '../../core/models/task';
 
 @Component({
   selector: 'app-task-list',
@@ -27,7 +27,7 @@ export class TaskList {
 
   protected readonly effortOptions = EFFORT_OPTIONS;
   protected readonly statusOptions = STATUS_OPTIONS;
-  protected readonly openStatusOptions = STATUS_OPTIONS.filter((option) => option.value !== 'Done');
+  protected readonly openStatusOptions = STATUS_OPTIONS.filter((option) => !CLOSED_STATUSES.includes(option.value));
 
   protected readonly statusFilter = signal<TaskDto['status'] | 'all'>('all');
   protected readonly effortFilter = signal<number | 'all'>('all');
@@ -43,7 +43,7 @@ export class TaskList {
     const search = this.searchText().trim().toLowerCase();
 
     return [...this.tasksService.tasks()]
-      .filter((task) => task.status !== 'Done')
+      .filter((task) => !CLOSED_STATUSES.includes(task.status))
       .filter((task) => status === 'all' || task.status === status)
       .filter((task) => effort === 'all' || task.estimatedMinutes === effort)
       .filter((task) => {
@@ -157,7 +157,15 @@ export class TaskList {
     }
   }
 
-  protected async markDone(task: TaskDto): Promise<void> {
+  protected markDone(task: TaskDto): Promise<void> {
+    return this.closeTask(task, 'Done', 'Aufgabe konnte nicht als erledigt markiert werden.');
+  }
+
+  protected discard(task: TaskDto): Promise<void> {
+    return this.closeTask(task, 'Discarded', 'Aufgabe konnte nicht verworfen werden.');
+  }
+
+  private async closeTask(task: TaskDto, status: TaskDto['status'], failureMessage: string): Promise<void> {
     if (this.saving()) {
       return;
     }
@@ -169,7 +177,7 @@ export class TaskList {
       await this.tasksService.update(task.id, {
         title: task.title,
         notes: task.notes,
-        status: 'Done',
+        status,
         category: task.category,
         estimatedMinutes: task.estimatedMinutes,
         dueDate: task.dueDate,
@@ -178,7 +186,7 @@ export class TaskList {
       this.expandedTaskId.set(null);
       this.focusCoordinator.requestCaptureFormFocus();
     } catch {
-      this.errorMessage.set('Aufgabe konnte nicht als erledigt markiert werden.');
+      this.errorMessage.set(failureMessage);
     } finally {
       this.saving.set(false);
     }
