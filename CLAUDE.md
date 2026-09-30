@@ -42,6 +42,9 @@ podman compose up --build
 - Backend: http://localhost:5000 (Health-Check unter `/health`)
 - Frontend: http://localhost:4200
 - Datenbank: Postgres auf Port 5432 (intern, nicht standardmäßig nach außen gemappt)
+- Beispieldaten: werden nur erzeugt, wenn `SeedDemoData` in `compose.yaml` auf
+  `"true"` steht **und** die Datenbank komplett leer ist. Standard ist `"false"`,
+  weil die Datenbank echte Daten enthält.
 
 Nach Code-Änderungen im Frontend/Backend immer mit `--build` starten, sonst
 wird ein gecachtes altes Image wiederverwendet. Bei bereits laufenden

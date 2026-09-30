@@ -16,6 +16,8 @@ services:
       context: ./src/Backend
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      # "true" befüllt eine leere Datenbank beim Start mit Beispieldaten.
+      SeedDemoData: "false"
       ConnectionStrings__Default: "Host=10.89.10.2;Port=5432;Database=getthingsdone;Username=getthingsdone;Password=getthingsdone"
     ports:
       - "5000:8080"

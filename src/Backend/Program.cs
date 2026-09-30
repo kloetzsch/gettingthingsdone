@@ -49,7 +49,9 @@ if (Assembly.GetEntryAssembly()?.GetName().Name != "GetDocument.Insider")
         {
             db.Database.Migrate();
 
-            if (app.Environment.IsDevelopment())
+            // Beispieldaten nur auf ausdrücklichen Wunsch (SeedDemoData=true), damit eine
+            // bewusst geleerte Datenbank mit echten Daten nicht wieder befüllt wird.
+            if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDemoData"))
             {
                 await DevSeeder.SeedIfEmptyAsync(db);
             }

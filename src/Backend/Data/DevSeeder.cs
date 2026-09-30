@@ -5,7 +5,7 @@ namespace Backend.Data;
 
 /// <summary>
 /// Nur für lokale Entwicklung: befüllt eine leere Datenbank mit Beispieldaten.
-/// Wird in Program.cs ausschließlich unter app.Environment.IsDevelopment() aufgerufen
+/// Wird in Program.cs nur unter app.Environment.IsDevelopment() und mit SeedDemoData=true aufgerufen
 /// und bricht selbst zusätzlich ab, falls bereits Daten vorhanden sind.
 /// </summary>
 public static class DevSeeder
