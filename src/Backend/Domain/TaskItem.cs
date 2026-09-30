@@ -12,6 +12,10 @@ public class TaskItem
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? CompletedAt { get; set; }
 
+    // Vom Nutzer festgelegte Priorität der offenen Aufgaben: kleiner = weiter oben.
+    // Neue Aufgaben landen ganz oben, Umsortieren vergibt die Werte neu ab 0.
+    public int SortOrder { get; set; }
+
     public Guid? ProjectId { get; set; }
     public Project? Project { get; set; }
 }

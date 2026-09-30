@@ -26,6 +26,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             entity.Property(t => t.Title).HasMaxLength(200);
             entity.Property(t => t.Category).HasMaxLength(100);
+            entity.HasIndex(t => t.SortOrder);
 
             entity.ToTable(t => t.HasCheckConstraint(
                 "CK_TaskItem_EstimatedMinutes",

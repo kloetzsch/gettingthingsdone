@@ -101,4 +101,70 @@ public class TaskEndpointTests(CustomWebApplicationFactory factory) : IClassFixt
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async Task CreateTask_PlacesNewTaskAtTop()
+    {
+        var client = factory.CreateClient();
+
+        var first = await CreateTaskAsync(client, "Erste Aufgabe");
+        var second = await CreateTaskAsync(client, "Zweite Aufgabe");
+
+        Assert.True(second.SortOrder < first.SortOrder);
+    }
+
+    [Fact]
+    public async Task ReorderTasks_ChangesOrderOfTaskList()
+    {
+        var client = factory.CreateClient();
+
+        var a = await CreateTaskAsync(client, "A");
+        var b = await CreateTaskAsync(client, "B");
+        var c = await CreateTaskAsync(client, "C");
+
+        var reorderResponse = await client.PutAsJsonAsync(
+            "/api/tasks/order",
+            new ReorderTasksRequest([a.Id, c.Id, b.Id]));
+
+        Assert.Equal(HttpStatusCode.NoContent, reorderResponse.StatusCode);
+        var tasks = await client.GetFromJsonAsync<List<TaskDto>>("/api/tasks", TestJsonOptions.Default);
+        var ids = tasks!.Select(t => t.Id).Where(id => id == a.Id || id == b.Id || id == c.Id).ToList();
+        Assert.Equal([a.Id, c.Id, b.Id], ids);
+    }
+
+    [Fact]
+    public async Task ReorderTasks_WithUnknownId_ReturnsValidationProblem()
+    {
+        var client = factory.CreateClient();
+
+        var a = await CreateTaskAsync(client, "A");
+
+        var response = await client.PutAsJsonAsync(
+            "/api/tasks/order",
+            new ReorderTasksRequest([a.Id, Guid.NewGuid()]));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ReorderTasks_WithDuplicateIds_ReturnsValidationProblem()
+    {
+        var client = factory.CreateClient();
+
+        var a = await CreateTaskAsync(client, "A");
+
+        var response = await client.PutAsJsonAsync(
+            "/api/tasks/order",
+            new ReorderTasksRequest([a.Id, a.Id]));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    private static async Task<TaskDto> CreateTaskAsync(HttpClient client, string title)
+    {
+        var response = await client.PostAsJsonAsync(
+            "/api/tasks",
+            new CreateTaskRequest(title, null, null, EffortMinutes.TenMinutes, null, null));
+        return (await response.Content.ReadFromJsonAsync<TaskDto>(TestJsonOptions.Default))!;
+    }
 }

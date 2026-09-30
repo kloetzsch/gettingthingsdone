@@ -12,7 +12,8 @@ public record TaskDto(
     DateOnly? DueDate,
     DateTimeOffset CreatedAt,
     DateTimeOffset? CompletedAt,
-    Guid? ProjectId)
+    Guid? ProjectId,
+    int SortOrder)
 {
     public static TaskDto FromEntity(TaskItem task) => new(
         task.Id,
@@ -24,7 +25,8 @@ public record TaskDto(
         task.DueDate,
         task.CreatedAt,
         task.CompletedAt,
-        task.ProjectId);
+        task.ProjectId,
+        task.SortOrder);
 }
 
 public record CreateTaskRequest(
@@ -43,3 +45,5 @@ public record UpdateTaskRequest(
     int EstimatedMinutes,
     DateOnly? DueDate,
     Guid? ProjectId);
+
+public record ReorderTasksRequest(IReadOnlyList<Guid> TaskIds);

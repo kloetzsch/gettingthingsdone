@@ -26,12 +26,15 @@ public static class TaskEndpoints
                 query = query.Where(t => t.ProjectId == projectId);
             }
 
-            var tasks = await query.OrderBy(t => t.CreatedAt).ToListAsync();
+            var tasks = await query
+                .OrderBy(t => t.SortOrder)
+                .ThenByDescending(t => t.CreatedAt)
+                .ToListAsync();
             return Results.Ok(tasks.Select(TaskDto.FromEntity));
         })
         .WithName("GetTasks")
         .WithSummary("Aufgaben auflisten")
-        .WithDescription("Liefert alle Aufgaben, optional gefiltert nach GTD-Status und/oder Projekt.")
+        .WithDescription("Liefert alle Aufgaben in Prioritätsreihenfolge (sortOrder), optional gefiltert nach GTD-Status und/oder Projekt.")
         .Produces<IEnumerable<TaskDto>>(StatusCodes.Status200OK);
 
         group.MapGet("/{id:guid}", async (AppDbContext db, Guid id) =>
@@ -70,6 +73,9 @@ public static class TaskEndpoints
                 return Results.ValidationProblem(errors);
             }
 
+            // Neue Aufgaben erscheinen ganz oben, bis sie beim Priorisieren einsortiert werden.
+            var minSortOrder = await db.Tasks.MinAsync(t => (int?)t.SortOrder) ?? 0;
+
             var task = new TaskItem
             {
                 Id = Guid.NewGuid(),
@@ -81,6 +87,7 @@ public static class TaskEndpoints
                 ProjectId = request.ProjectId,
                 Status = GtdStatus.Inbox,
                 CreatedAt = DateTimeOffset.UtcNow,
+                SortOrder = minSortOrder - 1,
             };
 
             db.Tasks.Add(task);
@@ -92,6 +99,41 @@ public static class TaskEndpoints
         .WithSummary("Aufgabe anlegen")
         .WithDescription("Legt eine neue Aufgabe im Status \"Inbox\" an. estimatedMinutes muss einem der erlaubten Aufwandswerte entsprechen.")
         .Produces<TaskDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem();
+
+        group.MapPut("/order", async (AppDbContext db, [FromBody] ReorderTasksRequest request) =>
+        {
+            if (request.TaskIds.Count != request.TaskIds.Distinct().Count())
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    [nameof(request.TaskIds)] = ["Task ids must be unique."],
+                });
+            }
+
+            var tasks = await db.Tasks.Where(t => request.TaskIds.Contains(t.Id)).ToDictionaryAsync(t => t.Id);
+            var missing = request.TaskIds.Where(id => !tasks.ContainsKey(id)).ToList();
+            if (missing.Count > 0)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    [nameof(request.TaskIds)] = [$"Unknown task ids: {string.Join(", ", missing)}."],
+                });
+            }
+
+            for (var i = 0; i < request.TaskIds.Count; i++)
+            {
+                tasks[request.TaskIds[i]].SortOrder = i;
+            }
+
+            await db.SaveChangesAsync();
+
+            return Results.NoContent();
+        })
+        .WithName("ReorderTasks")
+        .WithSummary("Aufgaben priorisieren")
+        .WithDescription("Setzt die Reihenfolge der übergebenen Aufgaben: die erste Id erhält sortOrder 0, die zweite 1 usw. Nicht übergebene Aufgaben bleiben unverändert.")
+        .Produces(StatusCodes.Status204NoContent)
         .ProducesValidationProblem();
 
         group.MapPut("/{id:guid}", async (AppDbContext db, Guid id, [FromBody] UpdateTaskRequest request) =>
