@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, effect, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -37,7 +37,20 @@ export class TaskCapture implements AfterViewInit {
   protected readonly selectedCategory = signal<string | null>(null);
   protected readonly selectedProjectId = signal<string | null>(null);
 
-  protected readonly activeProjects = () => this.projectsService.projects().filter((p) => p.status === 'Active');
+  protected readonly activeProjects = computed(() => this.projectsService.projects().filter((p) => p.status === 'Active'));
+
+  // Roving tabindex: only the selected option (or the "none" option as fallback) is a tab stop,
+  // the others are reached via arrow keys. MatButtonToggleGroup only initializes this once in
+  // ngAfterContentInit, so options rendered later (categories/projects arrive asynchronously)
+  // would otherwise keep their default tabindex 0 and each become a tab stop.
+  protected readonly focusableCategory = computed(() => {
+    const selected = this.selectedCategory();
+    return this.categoriesService.categories().some((c) => c.name === selected) ? selected : null;
+  });
+  protected readonly focusableProjectId = computed(() => {
+    const selected = this.selectedProjectId();
+    return this.activeProjects().some((p) => p.id === selected) ? selected : null;
+  });
 
   protected readonly submitting = signal(false);
   protected readonly justCreated = signal(false);
