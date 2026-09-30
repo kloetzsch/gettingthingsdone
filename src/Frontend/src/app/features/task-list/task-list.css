@@ -45,6 +45,33 @@
   gap: 10px;
 }
 
+.drag-handle {
+  flex: none;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  color: var(--mat-sys-on-surface-variant);
+  cursor: grab;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.cdk-drag-preview {
+  box-shadow: var(--mat-sys-level3);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.35;
+}
+
+.cdk-drag-animating,
+.tasks.cdk-drop-list-dragging .mat-expansion-panel:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
 .task-row-grid {
   display: grid;
   grid-template-columns: minmax(160px, 2fr) 60px minmax(90px, 1fr) minmax(120px, 1.4fr) 116px;

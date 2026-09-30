@@ -11,6 +11,7 @@ export interface TaskDto {
   id: string;
   notes: (string | null);
   projectId: (string | null);
+  sortOrder: number;
   status: GtdStatus;
   title: string;
 }

@@ -67,14 +67,36 @@
       {{ hasActiveFilters() ? 'Keine Aufgaben für diese Filter.' : 'Keine offenen Aufgaben — Zeit für einen Kaffee.' }}
     </p>
   } @else {
-    <mat-accordion class="tasks">
+    @if (reorderError(); as message) {
+      <p class="error-text">{{ message }}</p>
+    }
+
+    <mat-accordion
+      class="tasks"
+      cdkDropList
+      cdkDropListLockAxis="y"
+      [cdkDropListData]="openTasks()"
+      (cdkDropListDropped)="onDrop($event)"
+    >
       @for (task of openTasks(); track task.id) {
         <mat-expansion-panel
+          cdkDrag
+          cdkDragPreviewContainer="parent"
+          [cdkDragData]="task"
           [expanded]="isExpanded(task)"
           (opened)="onOpened(task)"
           (closed)="onClosed(task)"
         >
           <mat-expansion-panel-header>
+            <span
+              class="drag-handle"
+              cdkDragHandle
+              title="Ziehen, um die Priorität zu ändern"
+              aria-label="Ziehen, um die Priorität zu ändern"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-icon>drag_indicator</mat-icon>
+            </span>
             <div class="task-row-grid">
               <span class="cell cell-title">{{ task.title }}</span>
               <span class="cell cell-effort">{{ effortLabel(task.estimatedMinutes) }}</span>

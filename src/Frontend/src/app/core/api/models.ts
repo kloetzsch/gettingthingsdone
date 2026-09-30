@@ -9,6 +9,7 @@ export type { GtdStatus } from './models/gtd-status';
 export type { HttpValidationProblemDetails } from './models/http-validation-problem-details';
 export type { ProjectDto } from './models/project-dto';
 export type { ProjectStatus } from './models/project-status';
+export type { ReorderTasksRequest } from './models/reorder-tasks-request';
 export type { TaskDto } from './models/task-dto';
 export type { UpdateProjectRequest } from './models/update-project-request';
 export type { UpdateTaskRequest } from './models/update-task-request';

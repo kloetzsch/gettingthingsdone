@@ -1,9 +1,11 @@
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { CategoriesService } from '../../core/services/categories.service';
 import { FocusCoordinatorService } from '../../core/services/focus-coordinator.service';
@@ -11,10 +13,22 @@ import { ProjectsService } from '../../core/services/projects.service';
 import { TasksService } from '../../core/services/tasks.service';
 import { TaskDto } from '../../core/api/models';
 import { CLOSED_STATUSES, EFFORT_OPTIONS, STATUS_OPTIONS } from '../../core/models/task';
+import { compareByPriority, mergeVisibleOrder } from '../../core/utils/task-order';
 
 @Component({
   selector: 'app-task-list',
-  imports: [MatCardModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatButtonToggleModule, MatButtonModule],
+  imports: [
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    MatCardModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+  ],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,8 +56,7 @@ export class TaskList {
     const project = this.projectFilter();
     const search = this.searchText().trim().toLowerCase();
 
-    return [...this.tasksService.tasks()]
-      .filter((task) => !CLOSED_STATUSES.includes(task.status))
+    return this.allOpenTasks()
       .filter((task) => status === 'all' || task.status === status)
       .filter((task) => effort === 'all' || task.estimatedMinutes === effort)
       .filter((task) => {
@@ -55,9 +68,18 @@ export class TaskList {
         }
         return task.projectId === project;
       })
-      .filter((task) => !search || task.title.toLowerCase().includes(search))
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      .filter((task) => !search || task.title.toLowerCase().includes(search));
   });
+
+  /** Alle offenen Aufgaben in Prioritätsreihenfolge, unabhängig von den Filtern. */
+  private readonly allOpenTasks = computed(() =>
+    this.tasksService
+      .tasks()
+      .filter((task) => !CLOSED_STATUSES.includes(task.status))
+      .sort(compareByPriority),
+  );
+
+  protected readonly reorderError = signal<string | null>(null);
 
   protected readonly expandedTaskId = signal<string | null>(null);
 
@@ -92,6 +114,26 @@ export class TaskList {
 
   protected onProjectFilterClick(value: 'all' | 'none' | string): void {
     this.projectFilter.set(this.projectFilter() === value ? 'all' : value);
+  }
+
+  protected async onDrop(event: CdkDragDrop<TaskDto[]>): Promise<void> {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    const visibleIds = this.openTasks().map((task) => task.id);
+    moveItemInArray(visibleIds, event.previousIndex, event.currentIndex);
+    const orderedIds = mergeVisibleOrder(
+      this.allOpenTasks().map((task) => task.id),
+      visibleIds,
+    );
+
+    this.reorderError.set(null);
+    try {
+      await this.tasksService.reorder(orderedIds);
+    } catch {
+      this.reorderError.set('Neue Reihenfolge konnte nicht gespeichert werden.');
+    }
   }
 
   protected effortLabel(minutes: number): string {

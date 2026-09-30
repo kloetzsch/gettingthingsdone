@@ -13,6 +13,8 @@ export type { UpdateTask$Params as UpdateTask$Params } from './fn/tasks/update-t
 export { updateTask as updateTask } from './fn/tasks/update-task';
 export type { DeleteTask$Params as DeleteTask$Params } from './fn/tasks/delete-task';
 export { deleteTask as deleteTask } from './fn/tasks/delete-task';
+export type { ReorderTasks$Params as ReorderTasks$Params } from './fn/tasks/reorder-tasks';
+export { reorderTasks as reorderTasks } from './fn/tasks/reorder-tasks';
 export type { GetProjects$Params as GetProjects$Params } from './fn/projects/get-projects';
 export { getProjects as getProjects } from './fn/projects/get-projects';
 export type { CreateProject$Params as CreateProject$Params } from './fn/projects/create-project';
